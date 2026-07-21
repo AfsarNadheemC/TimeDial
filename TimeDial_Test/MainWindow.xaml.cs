@@ -20,5 +20,10 @@ namespace TimeDial_Test
         {
             InitializeComponent();
         }
+
+        private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+
+        }
     }
 }

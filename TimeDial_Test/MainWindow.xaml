@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TimeDial_Test"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" Background="Coral" MouseWheel="Window_MouseWheel" Topmost="True">
     <Grid>
-
+        <local:TimeDial Height="30" Width="100"/>
     </Grid>
 </Window>
