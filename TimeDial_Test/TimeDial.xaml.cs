@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Configuration;
 using System.Reflection.Metadata;
@@ -22,27 +23,31 @@ namespace TimeDial_Test
     public partial class TimeDial : UserControl, INotifyPropertyChanged
     {
 
-        public const double MAX_MARGIN = 330;
+        public double MAX_MARGIN = 690;
         public const double MAX_MINUTE = 1770;
         public const double HOUR_MARGIN = 30;
 
         public TimeDial()
         {
-
-            Hours = new List<int>
-            {
-                1,2,3,4,5,6,7,8,9,10,11,12
-            };
-
             Minutes = new List<int>();
+            Hours = new ObservableCollection<int>();
 
-            for (int i = 1; i <= 60; i++)
+            for (int i = 0; i < 60; i++)
             {
                 Minutes.Add(i);
             }
 
-            Hour = 1;
-            Minute = 1;
+            for (int i = 0; i <= 23; i++)
+            {
+                Hours.Add(i);
+            }
+
+            TimeTypeValue = TimeType.H24;
+            Hour = DateTime.Now.Hour;
+            Minute = DateTime.Now.Minute;
+
+
+            IsLiveTime = true;
 
             InitializeComponent();
         }
@@ -83,16 +88,13 @@ namespace TimeDial_Test
             get
             {
 
-                double Top = (Hour - 1) * 30;
-
-                //if (Top > 120) Top = 120;
-
-                double Bot = MAX_MARGIN - (Hour - 1) * 30;
-
-                //if (Bot > 120) Bot = 120;
 
 
-                return new Thickness(0, -Top , 0, -Bot);
+                double Top = TimeTypeValue == TimeType.H24 ? (Hour) * 30 : (Hour - 1) * 30;
+
+                double Bot = TimeTypeValue == TimeType.H24 ? MAX_MARGIN - (Hour) * 30 : MAX_MARGIN - (Hour - 1) * 30;
+
+                return new Thickness(0, -Top, 0, -Bot);
             }
         }
 
@@ -100,21 +102,39 @@ namespace TimeDial_Test
         {
             get
             {
-                double Top = (Minute - 1) * 30;
+                double Top = (Minute ) * 30;
 
-                //if (Top > 120) Top = 120;
-
-                double Bot = MAX_MINUTE - (Minute - 1) * 30;
-
-                //if (Bot > 120) Bot = 120;
-
+                double Bot = MAX_MINUTE - (Minute ) * 30;
 
                 return new Thickness(0, -Top, 0, -Bot);
             }
         }
 
-        public List <int> Hours { get; set; }
-        public List <int> Minutes { get; set; }
+
+
+        private TimeType _TimeType;
+
+        public TimeType TimeTypeValue
+        {
+            get { return _TimeType; }
+            set { _TimeType = value; OnPropertyChanged(nameof(TimeTypeValue)); }
+        }
+
+
+
+        private bool _IsLiveTime;
+
+        public bool IsLiveTime
+        {
+            get { return _IsLiveTime; }
+            set { _IsLiveTime = value; OnPropertyChanged(nameof(IsLiveTime)); }
+        }
+
+
+
+
+        public ObservableCollection<int> Hours { get; set; }
+        public List<int> Minutes { get; set; }
 
         private void Grid_MouseWheel(object sender, MouseWheelEventArgs e)
         {
@@ -125,12 +145,13 @@ namespace TimeDial_Test
 
         private void ItemsControl_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if (e.Delta < 0 && Hour < 12)
+            IsLiveTime = false;
+            if (e.Delta < 0 && (Hour < 12 && TimeTypeValue != TimeType.H24 || Hour < 23 && TimeTypeValue == TimeType.H24))
             {
                 Hour += 1;
             }
 
-            else if (e.Delta > 0 && Hour > 1)
+            else if (e.Delta > 0 && (Hour > 1 && TimeTypeValue != TimeType.H24 || Hour > 0 && TimeTypeValue == TimeType.H24))
             {
                 Hour -= 1;
 
@@ -140,6 +161,7 @@ namespace TimeDial_Test
 
         private void ItemsControl_MouseWheel1(object sender, MouseWheelEventArgs e)
         {
+            IsLiveTime = false;
             if (e.Delta < 0 && Minute < 60)
             {
                 Minute += 1;
@@ -150,5 +172,111 @@ namespace TimeDial_Test
                 Minute -= 1;
             }
         }
+
+        private void Reset_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            IsLiveTime = true;
+            Minute = DateTime.Now.Minute;
+
+            int H = DateTime.Now.Hour;
+            if (TimeTypeValue != TimeType.H24)
+            {
+
+                if (H == 0)
+                {
+                    Hour = 12;
+                    TimeTypeValue = TimeType.AM;
+                }
+                else if (H > 12)
+                {
+                    Hour = H - 12;
+                    TimeTypeValue = TimeType.PM;
+                }
+                else
+                {
+                    Hour = H;
+                    TimeTypeValue = TimeType.AM;
+
+                }
+            }
+            else
+            {
+                Hour = H;
+            }
+
+        }
+
+        private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void TimeType_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+
+
+            switch (TimeTypeValue)
+            {
+                case TimeType.AM:
+                    IsLiveTime = false;
+                    TimeTypeValue = TimeType.PM;
+                    break;
+
+                case TimeType.PM:
+                    IsLiveTime = false;
+                    ItemsControl.Height = 720;
+                    MAX_MARGIN = 690;
+                    Hours.Clear();
+
+                    for (int i = 0; i <= 23; i++)
+                    {
+                        Hours.Add(i);
+                    }
+
+                    TimeTypeValue = TimeType.H24;
+
+                    break;
+
+                case TimeType.H24:
+                    ItemsControl.Height = 360;
+                    MAX_MARGIN = 330;
+
+                    Hours.Clear();
+
+                    for (int i = 1; i <= 12; i++)
+                    {
+                        Hours.Add(i);
+                    }
+
+                    
+                        if ( Hour > 11)
+                        {
+                            TimeTypeValue = TimeType.PM;
+                        }
+                        else
+                        {
+                            TimeTypeValue = TimeType.AM;
+                        }
+                    
+
+                    if (Hour == 0)
+                    {
+                        Hour = 12;
+                    }
+                    else if (Hour > 12)
+                    {
+                        Hour -= 12;
+                    }
+
+
+                    break;
+            }
+            OnPropertyChanged(nameof(HourMargin));
+        }
+    }
+
+    public enum TimeType
+    {
+        AM, PM, H24
     }
 }

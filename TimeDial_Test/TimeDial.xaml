@@ -5,29 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TimeDial_Test"
              mc:Ignorable="d" 
-             d:DesignHeight="30" d:DesignWidth="100" x:Name="root" >
+             d:DesignHeight="30" d:DesignWidth="140" x:Name="root" >
 
-    <Grid>
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="B2V"/>
+    </UserControl.Resources>
+    
+    <Grid DataContext="{Binding ElementName=root}">
 
-
-        <!--<Border x:Name="Border" Padding="10" CornerRadius="10" Background="White" Width="100" Height="270" Margin="0,-120,0,-120" VerticalAlignment="Center">
-
-            <Border.OpacityMask>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                    <GradientStop Color="#44FFFFFF" Offset="0"/>
-
-                    <GradientStop Color="#FFFFFFFF" Offset="0.48"/>
-                    <GradientStop Color="#FFFFFFFF" Offset="0.52"/>
-                    <GradientStop Color="#44FFFFFF" Offset="1"/>
-                </LinearGradientBrush>
-            </Border.OpacityMask>
-
-            <Grid >
-
-
-                --><!-- Your content --><!--
-            </Grid>
-        </Border>-->
 
         <Border Background="White"  ClipToBounds="true" CornerRadius="10" >
 
@@ -36,14 +21,31 @@
                     <Setter Property="Margin" Value="0"/>
 
                     <Style.Triggers>
+
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Margin" Value="0,-120"/>
+
+                            <Trigger.EnterActions>
+                                <BeginStoryboard >
+                                    <Storyboard >
+                                        <ThicknessAnimation Duration="0:0:0.3" To="0,-120,0,-120" Storyboard.TargetProperty="Margin" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+
+                            <Trigger.ExitActions>
+                                <BeginStoryboard >
+                                    <Storyboard >
+                                        <ThicknessAnimation Duration="0:0:0.2" To="0,0,0,0" Storyboard.TargetProperty="Margin" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                            
                         </Trigger>
                     </Style.Triggers>
-                    
+
                 </Style>
             </Border.Style>
-            
+
             <Border.OpacityMask>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                     <GradientStop Color="#00FFFFFF" Offset="0"/>
@@ -56,90 +58,105 @@
 
 
             <Grid x:Name="MainGrid">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            
-            
-                <TextBlock Text=":" VerticalAlignment="Center" Grid.ColumnSpan="2" HorizontalAlignment="Center" TextAlignment="Center" FontSize="20" />
-            
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="25"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="30"/>
+                </Grid.ColumnDefinitions>
 
-           <Border ClipToBounds="True" Background="Transparent" Margin="0,-120">
-
+                <Grid VerticalAlignment="Center"  Height="31"  Grid.ColumnSpan="5">
+                    
+                <Line X1="25" Y1="0" X2="90" Y2="0"  Stroke="LightGray" StrokeThickness="0.8" />
+                <Line X1="25" Y1="30" X2="90" Y2="30"  Stroke="LightGray" StrokeThickness="0.8" />
+                </Grid>
                 
 
-                <ItemsControl Background="Transparent" x:Name="ItemsControl" MouseWheel="ItemsControl_MouseWheel" Height="360" ItemsSource="{Binding Hours, ElementName=root}" Margin="{Binding ElementName=root, Path=HourMargin}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Background="Transparent" Height="30" Text="{Binding}" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
+                <TextBlock x:Name="Reset" MouseDown="Reset_MouseDown" Text="↺" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="25"/>
 
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate >
-                            <StackPanel />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-
-                </ItemsControl>
-            </Border>
+                <TextBlock Text=":" VerticalAlignment="Center" Grid.ColumnSpan="2" HorizontalAlignment="Center" TextAlignment="Center" FontSize="20" Grid.Column="1" />
 
 
-                <Border ClipToBounds="True" Grid.Column="1" Background="Transparent" Margin="0,-120">
+                <Border ClipToBounds="True" Background="Transparent" Margin="0,-120" Grid.Column="1">
 
 
 
-                <ItemsControl Background="Transparent" x:Name="ItemsControl1" MouseWheel="ItemsControl_MouseWheel1" Height="1800" ItemsSource="{Binding Minutes, ElementName=root}" Margin="{Binding ElementName=root, Path=MinuteMargin}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Background="Transparent" Height="30" Text="{Binding}" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
+                    <ItemsControl Background="Transparent" x:Name="ItemsControl" MouseWheel="ItemsControl_MouseWheel" Height="720" ItemsSource="{Binding Hours, ElementName=root}" Margin="{Binding ElementName=root, Path=HourMargin}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Background="Transparent" Height="30" Text="{Binding}" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
 
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate >
-                            <StackPanel />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate >
+                                <StackPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
 
-                </ItemsControl>
-            </Border>
+                    </ItemsControl>
+                </Border>
 
-            <Border x:Name="Grid" ClipToBounds="True" Height="30" CornerRadius="10" Grid.ColumnSpan="2" Visibility="Collapsed" >
-                <TextBlock x:Name="Txt"
+
+                <Border ClipToBounds="True" Grid.Column="2" Background="Transparent" Margin="0,-120">
+
+
+
+                    <ItemsControl Background="Transparent" x:Name="ItemsControl1" MouseWheel="ItemsControl_MouseWheel1" Height="1800" ItemsSource="{Binding Minutes, ElementName=root}" Margin="{Binding ElementName=root, Path=MinuteMargin}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Background="Transparent" Height="30" Text="{Binding}" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate >
+                                <StackPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                    </ItemsControl>
+                </Border>
+
+                <Border  Background="Transparent" x:Name="Grid" ClipToBounds="True" Height="30" CornerRadius="10" Grid.ColumnSpan="2" Visibility="Visible" Grid.Column="1" >
+
+                    <Border.Style>
+                        <Style TargetType="Border">
+                                <Style.Triggers>
+
+                                    <DataTrigger Binding="{Binding IsMouseOver, ElementName=Grid}"
+                                 Value="True">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+
+                                    <DataTrigger Binding="{Binding IsMouseOver, ElementName=ItemsControl}"
+                                 Value="True">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+
+                                    <DataTrigger Binding="{Binding IsMouseOver, ElementName=ItemsControl1}"
+                                 Value="True">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+
+                                    <DataTrigger Binding="{Binding IsLiveTime, ElementName=root }"
+                                 Value="False">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                    <TextBlock x:Name="Txt"
                Text="Now" TextAlignment="Center" Width="70"
                FontSize="20"
-               Background="White">
+               Background="White" Height="28">
+                    </TextBlock>
+                </Border>
 
-                    <TextBlock.Style>
-                        <Style TargetType="TextBlock">
-                            <Style.Triggers>
+                <TextBlock Text="{Binding TimeTypeValue}" Grid.Column="3" FontSize="13" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="SemiBold" Foreground="Navy" x:Name="TimeTypeText" MouseDown="TimeType_MouseDown" />
 
-                                <DataTrigger Binding="{Binding IsMouseOver, ElementName=Grid}"
-                                 Value="True">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                </DataTrigger>
-
-
-                                <DataTrigger Binding="{Binding IsMouseOver, ElementName=ItemsControl}"
-                                 Value="True">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                </DataTrigger>
-
-
-                                <DataTrigger Binding="{Binding IsMouseOver, ElementName=ItemsControl1}"
-                                 Value="True">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                </DataTrigger>
-
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-                </TextBlock>
-            </Border>
-
-        </Grid>
+            </Grid>
         </Border>
     </Grid>
 </UserControl>
