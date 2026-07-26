@@ -10,7 +10,7 @@
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="B2V"/>
     </UserControl.Resources>
-    
+
     <Grid DataContext="{Binding ElementName=root}">
 
 
@@ -39,7 +39,7 @@
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.ExitActions>
-                            
+
                         </Trigger>
                     </Style.Triggers>
 
@@ -66,11 +66,11 @@
                 </Grid.ColumnDefinitions>
 
                 <Grid VerticalAlignment="Center"  Height="31"  Grid.ColumnSpan="5">
-                    
-                <Line X1="25" Y1="0" X2="90" Y2="0"  Stroke="LightGray" StrokeThickness="0.8" />
-                <Line X1="25" Y1="30" X2="90" Y2="30"  Stroke="LightGray" StrokeThickness="0.8" />
+
+                    <Line X1="25" Y1="0" X2="90" Y2="0"  Stroke="LightGray" StrokeThickness="0.8" />
+                    <Line X1="25" Y1="30" X2="90" Y2="30"  Stroke="LightGray" StrokeThickness="0.8" />
                 </Grid>
-                
+
 
                 <TextBlock x:Name="Reset" MouseDown="Reset_MouseDown" Text="↺" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="25"/>
 
@@ -118,35 +118,35 @@
                     </ItemsControl>
                 </Border>
 
-                <Border  Background="Transparent" x:Name="Grid" ClipToBounds="True" Height="30" CornerRadius="10" Grid.ColumnSpan="2" Visibility="Visible" Grid.Column="1" >
+                <Border  Background="Transparent" x:Name="Grid" ClipToBounds="True" Height="30" CornerRadius="10" Grid.ColumnSpan="2" Grid.Column="1" MouseEnter="Grid_MouseEnter" >
 
                     <Border.Style>
                         <Style TargetType="Border">
-                                <Style.Triggers>
+                            <Style.Triggers>
 
-                                    <DataTrigger Binding="{Binding IsMouseOver, ElementName=Grid}"
+                                <DataTrigger Binding="{Binding IsMouseOver, ElementName=Grid}"
                                  Value="True">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                    </DataTrigger>
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
 
-                                    <DataTrigger Binding="{Binding IsMouseOver, ElementName=ItemsControl}"
+                                <DataTrigger Binding="{Binding IsMouseOver, ElementName=ItemsControl}"
                                  Value="True">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                    </DataTrigger>
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
 
-                                    <DataTrigger Binding="{Binding IsMouseOver, ElementName=ItemsControl1}"
+                                <DataTrigger Binding="{Binding IsMouseOver, ElementName=ItemsControl1}"
                                  Value="True">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                    </DataTrigger>
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
 
-                                    <DataTrigger Binding="{Binding IsLiveTime, ElementName=root }"
+                                <DataTrigger Binding="{Binding IsLiveTime, ElementName=root }"
                                  Value="False">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                    </DataTrigger>
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
 
-                                </Style.Triggers>
-                            </Style>
-                        </Border.Style>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
                     <TextBlock x:Name="Txt"
                Text="Now" TextAlignment="Center" Width="70"
                FontSize="20"
@@ -154,7 +154,34 @@
                     </TextBlock>
                 </Border>
 
-                <TextBlock Text="{Binding TimeTypeValue}" Grid.Column="3" FontSize="13" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="SemiBold" Foreground="Navy" x:Name="TimeTypeText" MouseDown="TimeType_MouseDown" />
+
+                <Border Grid.Column="3" Height="150" VerticalAlignment="Center" ClipToBounds="True" Background="Transparent" x:Name="TimeTypeBorder" MouseWheel="TimeTypeBorder_MouseWheel">
+
+
+                    <StackPanel  Background="Transparent" Height="90" Margin="{Binding TimeTypeMargin}">
+
+
+                        <StackPanel.Resources >
+                            
+                            <Style TargetType="Label">
+                                <Setter Property="FontSize" Value="14"/>
+                                <Setter Property="Height" Value="30"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                <Setter Property="Foreground" Value="Navy"/>
+                                <Setter Property="Padding" Value="0"/>
+                            </Style>
+                            
+                        </StackPanel.Resources>
+                        
+                        <Label Content="AM" />
+                        <Label Content="PM" />
+                        <Label Content="24h" />
+
+                    </StackPanel>
+                </Border>
+
 
             </Grid>
         </Border>
