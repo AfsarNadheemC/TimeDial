@@ -37,10 +37,6 @@ namespace TimeDial_Test
                 Minutes.Add(i);
             }
 
-            for (int i = 0; i <= 23; i++)
-            {
-                Hours.Add(i);
-            }
 
             TimeTypeValue = TimeType.H24;
             Hour = DateTime.Now.Hour;
@@ -112,23 +108,61 @@ namespace TimeDial_Test
         public TimeType TimeTypeValue
         {
             get { return _TimeType; }
-            set { _TimeType = value; OnPropertyChanged(nameof(TimeTypeValue)); OnPropertyChanged(nameof(TimeTypeMargin)); }
+            set
+            {
+                _TimeType = value;
+
+                Hours.Clear();
+
+                switch (TimeTypeValue)
+                {
+
+                    case TimeType.AM:
+                    case TimeType.PM:
+                        for (int i = 1; i <= 12; i++)
+                        {
+                            Hours.Add(i);
+                        }
+                        ItemsControl?.Height = 360;
+                        MAX_MARGIN = 330;
+
+                        break;
+                    case TimeType.H24:
+                        for (int i = 0; i <= 23; i++)
+                        {
+                            Hours.Add(i);
+                        }
+                        ItemsControl?.Height = 720;
+                        MAX_MARGIN = 690;
+                        break;
+
+                }
+
+                OnPropertyChanged(nameof(TimeTypeValue));
+                OnPropertyChanged(nameof(TimeTypeMargin));
+            }
         }
 
         public Thickness TimeTypeMargin
         {
             get
             {
+
+
+
                 switch (TimeTypeValue)
                 {
 
                     case TimeType.AM:
+
                         return new Thickness(0, 30, 0, -30);
 
                     case TimeType.PM:
+
                         return new Thickness(0, 0, 0, 0);
 
                     case TimeType.H24:
+
                         return new Thickness(0, -30, 0, 30);
 
                 }
@@ -233,6 +267,9 @@ namespace TimeDial_Test
 
         private void TimeTypeBorder_MouseWheel(object sender, MouseWheelEventArgs e)
         {
+
+            IsLiveTime = false;
+
             switch (TimeTypeValue)
             {
                 case TimeType.AM:
@@ -246,9 +283,9 @@ namespace TimeDial_Test
                 case TimeType.PM:
                     if (e.Delta < 0)
                     {
-                        ItemsControl.Height = 720;
-                        MAX_MARGIN = 690;
+
                         TimeTypeValue = TimeType.H24;
+                        Hour = Hour;
 
                     }
                     else
@@ -261,8 +298,7 @@ namespace TimeDial_Test
                 case TimeType.H24:
                     if (e.Delta > 0)
                     {
-                        ItemsControl.Height = 360;
-                        MAX_MARGIN = 330;
+                        TimeTypeValue = TimeType.PM;
                         if (Hour == 0)
                         {
                             Hour = 12;
@@ -271,9 +307,21 @@ namespace TimeDial_Test
                         {
                             Hour -= 12;
                         }
-                        TimeTypeValue = TimeType.PM;
+                        else
+                        {
+                            Hour = Hour;
+                        }
                     }
                     break;
+            }
+        }
+
+        private void Hour_Mousedown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is TextBlock tb && tb.DataContext is int h)
+            {
+                Hour = h;
+                IsLiveTime = false;
             }
         }
     }

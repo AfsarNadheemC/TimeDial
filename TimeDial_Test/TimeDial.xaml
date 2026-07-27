@@ -84,7 +84,7 @@
                     <ItemsControl Background="Transparent" x:Name="ItemsControl" MouseWheel="ItemsControl_MouseWheel" Height="720" ItemsSource="{Binding Hours, ElementName=root}" Margin="{Binding ElementName=root, Path=HourMargin}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Background="Transparent" Height="30" Text="{Binding}" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <TextBlock MouseDown="Hour_Mousedown"  Background="Transparent" Height="30" Text="{Binding}" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
 
