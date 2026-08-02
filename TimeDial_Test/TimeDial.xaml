@@ -105,7 +105,7 @@
                     <ItemsControl Background="Transparent" x:Name="ItemsControl1" MouseWheel="ItemsControl_MouseWheel1" Height="1800" ItemsSource="{Binding Minutes, ElementName=root}" Margin="{Binding ElementName=root, Path=MinuteMargin}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Background="Transparent" Height="30" Text="{Binding}" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <TextBlock MouseDown="Minute_Mousedown" Background="Transparent" Height="30" Text="{Binding}" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
 
@@ -118,13 +118,31 @@
                     </ItemsControl>
                 </Border>
 
-                <Border  Background="Transparent" x:Name="Grid" ClipToBounds="True" Height="30" CornerRadius="10" Grid.ColumnSpan="2" Grid.Column="1" MouseEnter="Grid_MouseEnter" >
+                <Grid Grid.Column="1" Height="30" Grid.ColumnSpan="2" x:Name="TextBoxGrid">
+
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox x:Name="HourTextBox" FontSize="20" VerticalContentAlignment="Center" Padding="0" HorizontalContentAlignment="Center" LostFocus="HourTextBox_LostFocus" KeyDown="HourTextBox_KeyDown" Grid.Column="0" Text="{Binding Hour , UpdateSourceTrigger=LostFocus}" Margin="0,1" BorderThickness="1" Visibility="Collapsed" />
+                    <TextBox x:Name="MinuteTextBox" FontSize="20" VerticalContentAlignment="Center" Padding="0" HorizontalContentAlignment="Center" LostFocus="MinuteTextBox_LostFocus" KeyDown="MinuteTextBox_KeyDown" Grid.Column="1" Text="{Binding Minute }" Margin="0,1" BorderThickness="1" Visibility="Collapsed" />
+                </Grid>
+
+
+                <Border Background="Transparent" x:Name="Grid" ClipToBounds="True" Height="30"  Grid.ColumnSpan="2" Grid.Column="1" MouseEnter="Grid_MouseEnter" >
 
                     <Border.Style>
                         <Style TargetType="Border">
                             <Style.Triggers>
 
                                 <DataTrigger Binding="{Binding IsMouseOver, ElementName=Grid}"
+                                 Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+
+                                <DataTrigger Binding="{Binding IsMouseOver, ElementName=TextBoxGrid}"
                                  Value="True">
                                     <Setter Property="Visibility" Value="Collapsed"/>
                                 </DataTrigger>
@@ -147,11 +165,13 @@
                             </Style.Triggers>
                         </Style>
                     </Border.Style>
-                    <TextBlock x:Name="Txt"
+
+ 
+                        <TextBlock x:Name="Txt"
                Text="Now" TextAlignment="Center" Width="70"
                FontSize="20"
-               Background="White" Height="28">
-                    </TextBlock>
+               Background="White" Height="28" />
+
                 </Border>
 
 
@@ -162,7 +182,7 @@
 
 
                         <StackPanel.Resources >
-                            
+
                             <Style TargetType="Label">
                                 <Setter Property="FontSize" Value="14"/>
                                 <Setter Property="Height" Value="30"/>
@@ -172,9 +192,9 @@
                                 <Setter Property="Foreground" Value="Navy"/>
                                 <Setter Property="Padding" Value="0"/>
                             </Style>
-                            
+
                         </StackPanel.Resources>
-                        
+
                         <Label Content="AM" />
                         <Label Content="PM" />
                         <Label Content="24h" />

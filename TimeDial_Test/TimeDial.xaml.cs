@@ -51,7 +51,27 @@ namespace TimeDial_Test
         public int Hour
         {
             get { return (int)GetValue(HourProperty); }
-            set { SetValue(HourProperty, value); OnPropertyChanged(nameof(HourMargin)); }
+            set
+            {
+                bool IsSet = false;
+
+                if (TimeTypeValue == TimeType.H24)
+                {
+                    IsSet = (value >= 0 && value <= 23);
+                }
+                else
+                {
+                    IsSet = (value >= 1 && value <= 12);
+                }
+
+                if (IsSet)
+                {
+                    SetValue(HourProperty, value);
+                }
+
+
+                OnPropertyChanged(nameof(HourMargin));
+            }
         }
 
         // Using a DependencyProperty as the backing store for Hour.  This enables animation, styling, binding, etc...
@@ -147,9 +167,6 @@ namespace TimeDial_Test
         {
             get
             {
-
-
-
                 switch (TimeTypeValue)
                 {
 
@@ -204,12 +221,12 @@ namespace TimeDial_Test
         private void ItemsControl_MouseWheel1(object sender, MouseWheelEventArgs e)
         {
             IsLiveTime = false;
-            if (e.Delta < 0 && Minute < 60)
+            if (e.Delta < 0 && Minute < 59)
             {
                 Minute += 1;
             }
 
-            else if (e.Delta > 0 && Minute > 1)
+            else if (e.Delta > 0 && Minute > 0)
             {
                 Minute -= 1;
             }
@@ -320,9 +337,109 @@ namespace TimeDial_Test
         {
             if (sender is TextBlock tb && tb.DataContext is int h)
             {
-                Hour = h;
-                IsLiveTime = false;
+
+                if (Hour == h)
+                {
+                    HourTextBox.Visibility = Visibility.Visible;
+                    HourTextBox.Focus();
+                    OnPropertyChanged(nameof(Hour));
+                    HourTextBox.SelectAll();
+
+                }
+                else
+                {
+                    Hour = h;
+                    IsLiveTime = false;
+                }
             }
+        }
+
+        private void Minute_Mousedown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is TextBlock tb && tb.DataContext is int m)
+            {
+                if (Minute == m)
+                {
+                    MinuteTextBox.Visibility = Visibility.Visible;
+                    MinuteTextBox.Focus();
+                    OnPropertyChanged(nameof(Minute));
+                    MinuteTextBox.SelectAll();
+                }
+                else
+                {
+                    Minute = m;
+                    IsLiveTime = false;
+                }
+            }
+        }
+
+        private void HourTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            HourTextBox.Visibility = Visibility.Collapsed;
+            var textBox = (TextBox)sender;
+
+            // Update the bound property immediately
+            textBox.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
+
+            OnPropertyChanged(nameof(Hour));
+            OnPropertyChanged(nameof(HourMargin));
+
+        }
+
+        private void HourTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            IsLiveTime = false;
+            if (e.Key == Key.Enter)
+            {
+
+                var textBox = (TextBox)sender;
+
+                // Update the bound property immediately
+                textBox.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
+
+                OnPropertyChanged(nameof(Hour));
+                OnPropertyChanged(nameof(HourMargin));
+
+                root.Focus();   // or another control like a Button
+                e.Handled = true;
+                HourTextBox.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void MinuteTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            IsLiveTime = false;
+            if (e.Key == Key.Enter)
+            {
+
+
+                var textBox = (TextBox)sender;
+
+                // Update the bound property immediately
+                textBox.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
+
+                OnPropertyChanged(nameof(Minute));
+                OnPropertyChanged(nameof(MinuteMargin));
+
+                root.Focus();   // or another control like a Button
+                e.Handled = true;
+                MinuteTextBox.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void MinuteTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            MinuteTextBox.Visibility = Visibility.Collapsed;
+
+            var textBox = (TextBox)sender;
+
+            // Update the bound property immediately
+            textBox.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
+
+
+            OnPropertyChanged(nameof(Minute));
+            OnPropertyChanged(nameof(MinuteMargin));
+
         }
     }
 
