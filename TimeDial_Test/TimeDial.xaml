@@ -4,8 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TimeDial_Test"
-             mc:Ignorable="d" 
-             d:DesignHeight="30" d:DesignWidth="140" x:Name="root" >
+             mc:Ignorable="d" MaxHeight="30" MinHeight="30" MaxWidth="120" MinWidth="120"
+             d:DesignHeight="30" d:DesignWidth="120" x:Name="root" >
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="B2V"/>
@@ -53,9 +53,10 @@
             <Border.OpacityMask>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                     <GradientStop Color="#00FFFFFF" Offset="0"/>
-
+                    <GradientStop Color="#22FFFFFF" Offset="0.2"/>
                     <GradientStop Color="#FFFFFFFF" Offset="0.48"/>
                     <GradientStop Color="#FFFFFFFF" Offset="0.52"/>
+                    <GradientStop Color="#22FFFFFF" Offset="0.8"/>
                     <GradientStop Color="#00FFFFFF" Offset="1"/>
                 </LinearGradientBrush>
             </Border.OpacityMask>
@@ -130,8 +131,8 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBox x:Name="HourTextBox" FontSize="20" VerticalContentAlignment="Center" Padding="0" HorizontalContentAlignment="Center" LostFocus="HourTextBox_LostFocus" KeyDown="HourTextBox_KeyDown" MouseLeave="HourTextBox_MouseLeave" Grid.Column="0" Text="{Binding Hour , UpdateSourceTrigger=LostFocus}" Margin="0,1" BorderThickness="1" Visibility="Collapsed" />
-                    <TextBox x:Name="MinuteTextBox" FontSize="20" VerticalContentAlignment="Center" Padding="0" HorizontalContentAlignment="Center" LostFocus="MinuteTextBox_LostFocus" KeyDown="MinuteTextBox_KeyDown" MouseLeave="MinuteTextBox_MouseLeave" Grid.Column="1" Text="{Binding Minute }" Margin="0,1" BorderThickness="1" Visibility="Collapsed" />
+                    <TextBox x:Name="HourTextBox" FontSize="20" VerticalContentAlignment="Center" Padding="0" HorizontalContentAlignment="Center" LostFocus="HourTextBox_LostFocus" KeyDown="HourTextBox_KeyDown" MouseLeave="HourTextBox_MouseLeave" TextChanged="HourTextBox_TextChanged" Grid.Column="0" Text="{Binding Hour , UpdateSourceTrigger=LostFocus}" Margin="0,1" BorderThickness="1" Visibility="Collapsed" />
+                    <TextBox x:Name="MinuteTextBox" FontSize="20" VerticalContentAlignment="Center" Padding="0" HorizontalContentAlignment="Center" LostFocus="MinuteTextBox_LostFocus" KeyDown="MinuteTextBox_KeyDown" MouseLeave="MinuteTextBox_MouseLeave" TextChanged="MinuteTextBox_TextChanged" Grid.Column="1" Text="{Binding Minute }" Margin="0,1" BorderThickness="1" Visibility="Collapsed" />
                 </Grid>
 
 
