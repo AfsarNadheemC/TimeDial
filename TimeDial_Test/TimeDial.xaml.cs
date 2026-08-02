@@ -441,6 +441,17 @@ namespace TimeDial_Test
             OnPropertyChanged(nameof(MinuteMargin));
 
         }
+
+        private void HourTextBox_MouseLeave(object sender, MouseEventArgs e)
+        {
+            HourTextBox.Visibility = Visibility.Collapsed;
+        }
+
+        private void MinuteTextBox_MouseLeave(object sender, MouseEventArgs e)
+        {
+
+            MinuteTextBox.Visibility = Visibility.Collapsed;
+        }
     }
 
     public enum TimeType

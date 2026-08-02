@@ -24,6 +24,8 @@
 
                         <Trigger Property="IsMouseOver" Value="True">
 
+              
+                            
                             <Trigger.EnterActions>
                                 <BeginStoryboard >
                                     <Storyboard >
@@ -41,6 +43,8 @@
                             </Trigger.ExitActions>
 
                         </Trigger>
+
+
                     </Style.Triggers>
 
                 </Style>
@@ -126,8 +130,8 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBox x:Name="HourTextBox" FontSize="20" VerticalContentAlignment="Center" Padding="0" HorizontalContentAlignment="Center" LostFocus="HourTextBox_LostFocus" KeyDown="HourTextBox_KeyDown" Grid.Column="0" Text="{Binding Hour , UpdateSourceTrigger=LostFocus}" Margin="0,1" BorderThickness="1" Visibility="Collapsed" />
-                    <TextBox x:Name="MinuteTextBox" FontSize="20" VerticalContentAlignment="Center" Padding="0" HorizontalContentAlignment="Center" LostFocus="MinuteTextBox_LostFocus" KeyDown="MinuteTextBox_KeyDown" Grid.Column="1" Text="{Binding Minute }" Margin="0,1" BorderThickness="1" Visibility="Collapsed" />
+                    <TextBox x:Name="HourTextBox" FontSize="20" VerticalContentAlignment="Center" Padding="0" HorizontalContentAlignment="Center" LostFocus="HourTextBox_LostFocus" KeyDown="HourTextBox_KeyDown" MouseLeave="HourTextBox_MouseLeave" Grid.Column="0" Text="{Binding Hour , UpdateSourceTrigger=LostFocus}" Margin="0,1" BorderThickness="1" Visibility="Collapsed" />
+                    <TextBox x:Name="MinuteTextBox" FontSize="20" VerticalContentAlignment="Center" Padding="0" HorizontalContentAlignment="Center" LostFocus="MinuteTextBox_LostFocus" KeyDown="MinuteTextBox_KeyDown" MouseLeave="MinuteTextBox_MouseLeave" Grid.Column="1" Text="{Binding Minute }" Margin="0,1" BorderThickness="1" Visibility="Collapsed" />
                 </Grid>
 
 
