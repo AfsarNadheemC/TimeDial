@@ -8,6 +8,6 @@
         Title="MainWindow" Height="533" Width="300" Background="Navy" MouseWheel="Window_MouseWheel" Topmost="True">
     
     <Grid>
-        <local:TimeDial />
+        <local:TimeDial  />
     </Grid>
 </Window>

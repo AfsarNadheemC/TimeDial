@@ -76,7 +76,7 @@ namespace TimeDial_Test
 
         // Using a DependencyProperty as the backing store for Hour.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty HourProperty =
-            DependencyProperty.Register(nameof(Hour), typeof(int), typeof(TimeDial), new PropertyMetadata(0));
+            DependencyProperty.Register(nameof(Hour), typeof(int), typeof(TimeDial), new PropertyMetadata(DateTime.Now.Hour));
 
 
 
@@ -88,7 +88,7 @@ namespace TimeDial_Test
 
         // Using a DependencyProperty as the backing store for Minute.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MinuteProperty =
-            DependencyProperty.Register(nameof(Minute), typeof(int), typeof(TimeDial), new PropertyMetadata(0));
+            DependencyProperty.Register(nameof(Minute), typeof(int), typeof(TimeDial), new PropertyMetadata(DateTime.Now.Minute));
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -122,6 +122,7 @@ namespace TimeDial_Test
         }
 
 
+        
 
         private TimeType _TimeType;
 
@@ -143,7 +144,7 @@ namespace TimeDial_Test
                         {
                             Hours.Add(i);
                         }
-                        ItemsControl?.Height = 360;
+                        HourItemsControl?.Height = 360;
                         MAX_MARGIN = 330;
 
                         break;
@@ -152,7 +153,7 @@ namespace TimeDial_Test
                         {
                             Hours.Add(i);
                         }
-                        ItemsControl?.Height = 720;
+                        HourItemsControl?.Height = 720;
                         MAX_MARGIN = 690;
                         break;
 
@@ -203,7 +204,7 @@ namespace TimeDial_Test
         public List<int> Minutes { get; set; }
 
 
-        private void ItemsControl_MouseWheel(object sender, MouseWheelEventArgs e)
+        private void HourItemsControl_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             IsLiveTime = false;
             if (e.Delta < 0 && (Hour < 12 && TimeTypeValue != TimeType.H24 || Hour < 23 && TimeTypeValue == TimeType.H24))
@@ -218,7 +219,7 @@ namespace TimeDial_Test
             }
         }
 
-        private void ItemsControl_MouseWheel1(object sender, MouseWheelEventArgs e)
+        private void MinuteItemsControl_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             IsLiveTime = false;
             if (e.Delta < 0 && Minute < 59)
@@ -274,7 +275,7 @@ namespace TimeDial_Test
 
         }
 
-        private void Grid_MouseEnter(object sender, MouseEventArgs e)
+        private void NowGrid_MouseEnter(object sender, MouseEventArgs e)
         {
             if (IsLiveTime)
             {
@@ -365,12 +366,13 @@ namespace TimeDial_Test
         {
             IsLiveTime = false;
 
-            TextBox tb = sender as TextBox;
-
-            if (e.Key == Key.Enter)
+            if (sender is TextBox tb)
             {
-                UpdateHourByTextBox();
-                e.Handled = true;
+                if (e.Key == Key.Enter)
+                {
+                    UpdateHourByTextBox();
+                    e.Handled = true;
+                }
             }
         }
 
@@ -435,25 +437,19 @@ namespace TimeDial_Test
             {
                 if (TimeTypeValue == TimeType.H24)
                 {
-                    if (newHour < 0)
+                    if (newHour < 0 || newHour > 23)
                     {
-                        HourTextBox.Text = "0";
+                        HourTextBox.Text = Hour.ToString();
                     }
-                    else if (newHour > 23)
-                    {
-                        HourTextBox.Text = "23";
-                    }
+
                 }
                 else
                 {
-                    if (newHour < 1)
+                    if (newHour < 1 || newHour > 12)
                     {
-                        HourTextBox.Text = "1";
+                        HourTextBox.Text = Hour.ToString();
                     }
-                    else if (newHour > 12)
-                    {
-                        HourTextBox.Text = "12";
-                    }
+
                 }
             }
             else
@@ -466,15 +462,10 @@ namespace TimeDial_Test
         {
             if (int.TryParse(MinuteTextBox.Text, out int newMinute))
             {
-                if (newMinute < 0)
+                if (newMinute < 0 || newMinute > 59)
                 {
-                    MinuteTextBox.Text = "0";
+                    MinuteTextBox.Text = Minute.ToString();
                 }
-                else if (newMinute > 59)
-                {
-                    MinuteTextBox.Text = "59";
-                }
-
             }
             else
             {
