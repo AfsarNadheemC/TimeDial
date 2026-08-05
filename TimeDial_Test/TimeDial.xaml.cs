@@ -15,7 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace TimeDial_Test
+namespace TimeDialControl
 {
     /// <summary>
     /// Interaction logic for TimeDial.xaml
@@ -23,9 +23,9 @@ namespace TimeDial_Test
     public partial class TimeDial : UserControl, INotifyPropertyChanged
     {
 
-        public double MAX_MARGIN = 690;
-        public const double MAX_MINUTE = 1770;
-        public const double HOUR_MARGIN = 30;
+        private double MAX_MARGIN = 690;
+        private const double MAX_MINUTE = 1770;
+        private const double HOUR_MARGIN = 30;
 
         public TimeDial()
         {
@@ -37,47 +37,96 @@ namespace TimeDial_Test
                 Minutes.Add(i);
             }
 
-
             TimeTypeValue = TimeType.H24;
             Hour = DateTime.Now.Hour;
             Minute = DateTime.Now.Minute;
-
-
             IsLiveTime = true;
-
             InitializeComponent();
         }
+
+        private static void OnHourChanged(
+DependencyObject d,
+DependencyPropertyChangedEventArgs e)
+        {
+            if (d is TimeDial TD)
+            {
+                TD.UpdateHour();
+            }
+        }
+
+        private void UpdateHour()
+        {
+            IsLiveTime = false;
+            OnPropertyChanged(nameof(HourMargin));
+        }
+
+        private static object IsValidHour(DependencyObject d, object baseValue)
+        {
+            if (d is TimeDial TD)
+            {
+                return TD.GetHour((int)baseValue);
+            }
+            return 0;
+
+        }
+
+        private int GetHour(int hour)
+        {
+            bool IsSet;
+
+            if (TimeTypeValue == TimeType.H24)
+            {
+                IsSet = (hour >= 0 && hour <= 23);
+            }
+            else
+            {
+                IsSet = (hour >= 1 && hour <= 12);
+            }
+
+            return IsSet ? hour : Hour;
+        }
+
 
         public int Hour
         {
             get { return (int)GetValue(HourProperty); }
-            set
-            {
-                bool IsSet = false;
-
-                if (TimeTypeValue == TimeType.H24)
-                {
-                    IsSet = (value >= 0 && value <= 23);
-                }
-                else
-                {
-                    IsSet = (value >= 1 && value <= 12);
-                }
-
-                if (IsSet)
-                {
-                    SetValue(HourProperty, value);
-                }
-
-
-                OnPropertyChanged(nameof(HourMargin));
-            }
+            set { SetValue(HourProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for Hour.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty HourProperty =
-            DependencyProperty.Register(nameof(Hour), typeof(int), typeof(TimeDial), new PropertyMetadata(DateTime.Now.Hour));
+            DependencyProperty.Register(nameof(Hour), typeof(int), typeof(TimeDial), new PropertyMetadata(DateTime.Now.Hour, OnHourChanged, IsValidHour));
 
+
+
+        private static void OnMinuteChanged(
+DependencyObject d,
+DependencyPropertyChangedEventArgs e)
+        {
+            if (d is TimeDial TD)
+            {
+                TD.UpdateMinute();
+            }
+        }
+
+        private void UpdateMinute()
+        {
+            IsLiveTime = false;
+            OnPropertyChanged(nameof(MinuteMargin));
+        }
+
+        private static object IsValidMinute(DependencyObject d, object baseValue)
+        {
+            if (baseValue is int minute && minute >= 0 && minute <= 59)
+            {
+                return minute;
+            }
+            else if (d is TimeDial TD)
+            {
+                return TD.Minute;
+            }
+            return 0;
+        }
 
 
         public int Minute
@@ -88,14 +137,10 @@ namespace TimeDial_Test
 
         // Using a DependencyProperty as the backing store for Minute.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MinuteProperty =
-            DependencyProperty.Register(nameof(Minute), typeof(int), typeof(TimeDial), new PropertyMetadata(DateTime.Now.Minute));
+            DependencyProperty.Register(nameof(Minute), typeof(int), typeof(TimeDial), new PropertyMetadata(DateTime.Now.Minute, OnMinuteChanged , IsValidMinute));
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        protected virtual void OnPropertyChanged(string PropertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
-        }
 
         public Thickness HourMargin
         {
@@ -121,25 +166,100 @@ namespace TimeDial_Test
             }
         }
 
+        private static void OnFormatChanged(
+DependencyObject d,
+DependencyPropertyChangedEventArgs e)
+        {
+            if (d is TimeDial TD)
+            {
+                TD.UpdateTimeTypeValue(TD.Is24HourFormat);
+            }
+        }
 
-        
+        public void UpdateTimeTypeValue(bool is24HourFormat)
+        {
+            if (is24HourFormat)
+            {
+
+                TimeTypeValue = TimeType.H24;
+
+                switch (_TimeType)
+                {
+
+                    case TimeType.AM:
+                        if (Hour == 12)
+                        {
+                            Hour = 0;
+                        }
+                        else
+                        {
+                            OnPropertyChanged(nameof(HourMargin));
+                        }
+                        break;
+
+                    case TimeType.PM:
+                        if (Hour != 12)
+                        {
+                            Hour += 12;
+                        }
+                        else
+                        {
+                            OnPropertyChanged(nameof(HourMargin));
+                        }
+                        break;
+
+                }
+
+
+            }
+            else
+            {
+                if (Hour > 11)
+                {
+                    TimeTypeValue = TimeType.PM;
+                }
+                else
+                {
+                    TimeTypeValue = TimeType.AM;
+                }
+            }
+
+        }
+
+
+        public bool Is24HourFormat
+        {
+            get { return (bool)GetValue(Is24HourFormatProperty); }
+            set
+            {
+
+                SetValue(Is24HourFormatProperty, value);
+            }
+        }
+
+        // Using a DependencyProperty as the backing store for Is24HourFormat.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty Is24HourFormatProperty =
+            DependencyProperty.Register(nameof(Is24HourFormat), typeof(bool), typeof(TimeDial), new PropertyMetadata(true, OnFormatChanged));
+
+
 
         private TimeType _TimeType;
 
         public TimeType TimeTypeValue
         {
             get { return _TimeType; }
-            set
+            private set
             {
-                _TimeType = value;
-
                 Hours.Clear();
 
-                switch (TimeTypeValue)
+                TimeType OldTimeType = _TimeType;
+                _TimeType = value;
+
+
+                switch (value)
                 {
 
                     case TimeType.AM:
-                    case TimeType.PM:
                         for (int i = 1; i <= 12; i++)
                         {
                             Hours.Add(i);
@@ -147,17 +267,67 @@ namespace TimeDial_Test
                         HourItemsControl?.Height = 360;
                         MAX_MARGIN = 330;
 
+                        if (OldTimeType == TimeType.H24)
+                        {
+                            if (Hour == 0)
+                            {
+                                Hour = 12;
+                            }
+                            else
+                            {
+                                OnPropertyChanged(nameof(HourMargin));
+
+                            }
+                        }
+
                         break;
+
+
+                    case TimeType.PM:
+
+                        for (int i = 1; i <= 12; i++)
+                        {
+                            Hours.Add(i);
+                        }
+                        HourItemsControl?.Height = 360;
+                        MAX_MARGIN = 330;
+
+
+                        if (OldTimeType == TimeType.H24)
+                        {
+                            if (Hour == 0)
+                            {
+                                Hour = 12;
+                            }
+                            else if (Hour > 12)
+                            {
+                                Hour -= 12;
+                            }
+                            else
+                            {
+                                OnPropertyChanged(nameof(HourMargin));
+
+                            }
+                        }
+                        break;
+
                     case TimeType.H24:
+
                         for (int i = 0; i <= 23; i++)
                         {
                             Hours.Add(i);
                         }
+
                         HourItemsControl?.Height = 720;
                         MAX_MARGIN = 690;
+
+
+                        OnPropertyChanged(nameof(HourMargin));
+
                         break;
 
                 }
+
 
                 OnPropertyChanged(nameof(TimeTypeValue));
                 OnPropertyChanged(nameof(TimeTypeMargin));
@@ -194,15 +364,12 @@ namespace TimeDial_Test
         public bool IsLiveTime
         {
             get { return _IsLiveTime; }
-            set { _IsLiveTime = value; OnPropertyChanged(nameof(IsLiveTime)); }
+            private set { _IsLiveTime = value; OnPropertyChanged(nameof(IsLiveTime)); }
         }
 
+        public ObservableCollection<int> Hours { get; private set; }
 
-
-
-        public ObservableCollection<int> Hours { get; set; }
-        public List<int> Minutes { get; set; }
-
+        public List<int> Minutes { get; private set; }
 
         private void HourItemsControl_MouseWheel(object sender, MouseWheelEventArgs e)
         {
@@ -240,7 +407,6 @@ namespace TimeDial_Test
             int H = DateTime.Now.Hour;
             if (TimeTypeValue != TimeType.H24)
             {
-
                 if (H == 0)
                 {
                     Hour = 12;
@@ -255,7 +421,6 @@ namespace TimeDial_Test
                 {
                     Hour = H;
                     TimeTypeValue = TimeType.AM;
-
                 }
             }
             else
@@ -266,13 +431,8 @@ namespace TimeDial_Test
 
         private void Reset_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            IsLiveTime = true;
             ResetOperation();
-        }
-
-        private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-
+            IsLiveTime = true;
         }
 
         private void NowGrid_MouseEnter(object sender, MouseEventArgs e)
@@ -294,22 +454,17 @@ namespace TimeDial_Test
                     if (e.Delta < 0)
                     {
                         TimeTypeValue = TimeType.PM;
-                        // No need to change in count
                     }
                     break;
 
                 case TimeType.PM:
                     if (e.Delta < 0)
                     {
-
                         TimeTypeValue = TimeType.H24;
-                        Hour = Hour;
-
                     }
                     else
                     {
                         TimeTypeValue = TimeType.AM;
-                        // No need to change in count
                     }
                     break;
 
@@ -317,18 +472,6 @@ namespace TimeDial_Test
                     if (e.Delta > 0)
                     {
                         TimeTypeValue = TimeType.PM;
-                        if (Hour == 0)
-                        {
-                            Hour = 12;
-                        }
-                        else if (Hour > 12)
-                        {
-                            Hour -= 12;
-                        }
-                        else
-                        {
-                            Hour = Hour;
-                        }
                     }
                     break;
             }
@@ -341,7 +484,7 @@ namespace TimeDial_Test
 
                 if (Hour == h)
                 {
-                    OnPropertyChanged(nameof(Hour));
+                    OnPropertyChanged(nameof(HourMargin));
                     HourTextBox.Visibility = Visibility.Visible;
                     HourTextBox.Focus();
                     HourTextBox.SelectAll();
@@ -354,83 +497,6 @@ namespace TimeDial_Test
                 }
             }
         }
-        private void HourTextBox_MouseLeave(object sender, MouseEventArgs e)
-        {
-            UpdateHourByTextBox();
-        }
-        private void HourTextBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            UpdateHourByTextBox();
-        }
-        private void HourTextBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            IsLiveTime = false;
-
-            if (sender is TextBox tb)
-            {
-                if (e.Key == Key.Enter)
-                {
-                    UpdateHourByTextBox();
-                    e.Handled = true;
-                }
-            }
-        }
-
-
-
-
-        private void Minute_Mousedown(object sender, MouseButtonEventArgs e)
-        {
-            if (sender is TextBlock tb && tb.DataContext is int m)
-            {
-                if (Minute == m)
-                {
-                    MinuteTextBox.Visibility = Visibility.Visible;
-                    MinuteTextBox.Focus();
-                    OnPropertyChanged(nameof(Minute));
-                    MinuteTextBox.SelectAll();
-                }
-                else
-                {
-                    Minute = m;
-                    IsLiveTime = false;
-                }
-            }
-        }
-        private void MinuteTextBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            IsLiveTime = false;
-            if (e.Key == Key.Enter)
-            {
-                UpdateMinuteByTextBox();
-                e.Handled = true;
-            }
-        }
-        private void MinuteTextBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            UpdateMinuteByTextBox();
-        }
-        private void MinuteTextBox_MouseLeave(object sender, MouseEventArgs e)
-        {
-            UpdateMinuteByTextBox();
-        }
-
-        public void UpdateHourByTextBox()
-        {
-            HourTextBox.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
-            OnPropertyChanged(nameof(Hour));
-            OnPropertyChanged(nameof(HourMargin));
-            HourTextBox.Visibility = Visibility.Collapsed;
-        }
-
-        public void UpdateMinuteByTextBox()
-        {
-            MinuteTextBox.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
-            OnPropertyChanged(nameof(Minute));
-            OnPropertyChanged(nameof(MinuteMargin));
-            MinuteTextBox.Visibility = Visibility.Collapsed;
-        }
-
         private void HourTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (int.TryParse(HourTextBox.Text, out int newHour))
@@ -457,7 +523,53 @@ namespace TimeDial_Test
                 HourTextBox.Text = Hour.ToString();
             }
         }
+        private void HourTextBox_MouseLeave(object sender, MouseEventArgs e)
+        {
+            UpdateHourByTextBox();
+        }
+        private void HourTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            UpdateHourByTextBox();
+        }
+        private void HourTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            IsLiveTime = false;
 
+            if (sender is TextBox tb)
+            {
+                if (e.Key == Key.Enter)
+                {
+                    UpdateHourByTextBox();
+                    e.Handled = true;
+                }
+            }
+        }
+        public void UpdateHourByTextBox()
+        {
+            HourTextBox.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
+            OnPropertyChanged(nameof(HourMargin));
+            OnPropertyChanged(nameof(HourMargin));
+            HourTextBox.Visibility = Visibility.Collapsed;
+        }
+
+        private void Minute_Mousedown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is TextBlock tb && tb.DataContext is int m)
+            {
+                if (Minute == m)
+                {
+                    MinuteTextBox.Visibility = Visibility.Visible;
+                    MinuteTextBox.Focus();
+                    OnPropertyChanged(nameof(Minute));
+                    MinuteTextBox.SelectAll();
+                }
+                else
+                {
+                    Minute = m;
+                    IsLiveTime = false;
+                }
+            }
+        }
         private void MinuteTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (int.TryParse(MinuteTextBox.Text, out int newMinute))
@@ -472,6 +584,79 @@ namespace TimeDial_Test
                 MinuteTextBox.Text = Minute.ToString();
             }
         }
+        private void MinuteTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            IsLiveTime = false;
+            if (e.Key == Key.Enter)
+            {
+                UpdateMinuteByTextBox();
+                e.Handled = true;
+            }
+        }
+        private void MinuteTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            UpdateMinuteByTextBox();
+        }
+        private void MinuteTextBox_MouseLeave(object sender, MouseEventArgs e)
+        {
+            UpdateMinuteByTextBox();
+        }
+        public void UpdateMinuteByTextBox()
+        {
+            MinuteTextBox.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
+            OnPropertyChanged(nameof(Minute));
+            OnPropertyChanged(nameof(MinuteMargin));
+            MinuteTextBox.Visibility = Visibility.Collapsed;
+        }
+
+        private void TimeTypeMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Label tb)
+            {
+                switch (tb.Content)
+                {
+                    case "AM":
+                        if (TimeTypeValue != TimeType.AM) IsLiveTime = false;
+                        TimeTypeValue = TimeType.AM;
+                        break;
+
+                    case "PM":
+                        if (TimeTypeValue != TimeType.PM) IsLiveTime = false;
+                        TimeTypeValue = TimeType.PM;
+                        break;
+
+                    case "24h":
+                        if (TimeTypeValue != TimeType.H24) IsLiveTime = false;
+                        TimeTypeValue = TimeType.H24;
+                        break;
+                }
+            }
+        }
+
+        public string GetTimeString()
+        {
+            string hourStr = Hour.ToString("D2");
+            string minuteStr = Minute.ToString("D2");
+            if (TimeTypeValue == TimeType.H24)
+            {
+                return $"{hourStr}:{minuteStr}";
+            }
+            else
+            {
+                string amPm = TimeTypeValue == TimeType.AM ? "AM" : "PM";
+                return $"{hourStr}:{minuteStr} {amPm}";
+            }
+        }
+        public TimeOnly GetTime()
+        {
+            return new TimeOnly(Hour, Minute);
+        }
+
+        protected virtual void OnPropertyChanged(string PropertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
+        }
+
     }
 
     public enum TimeType

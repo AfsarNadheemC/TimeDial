@@ -19,11 +19,13 @@ namespace TimeDial_Test
         public MainWindow()
         {
             InitializeComponent();
+
+            TimeOnly Time = TimeDial.GetTime();
+            string TimeString = TimeDial.GetTimeString();
+
+
         }
 
-        private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
-        {
-
-        }
+       
     }
 }
