@@ -137,7 +137,7 @@ DependencyPropertyChangedEventArgs e)
 
         // Using a DependencyProperty as the backing store for Minute.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MinuteProperty =
-            DependencyProperty.Register(nameof(Minute), typeof(int), typeof(TimeDial), new PropertyMetadata(DateTime.Now.Minute, OnMinuteChanged , IsValidMinute));
+            DependencyProperty.Register(nameof(Minute), typeof(int), typeof(TimeDial), new PropertyMetadata(DateTime.Now.Minute, OnMinuteChanged, IsValidMinute));
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -633,23 +633,48 @@ DependencyPropertyChangedEventArgs e)
             }
         }
 
-        public string GetTimeString()
+        public string GetTimeString
         {
-            string hourStr = Hour.ToString("D2");
-            string minuteStr = Minute.ToString("D2");
-            if (TimeTypeValue == TimeType.H24)
+            get
             {
-                return $"{hourStr}:{minuteStr}";
-            }
-            else
-            {
-                string amPm = TimeTypeValue == TimeType.AM ? "AM" : "PM";
-                return $"{hourStr}:{minuteStr} {amPm}";
+                string hourStr = Hour.ToString("D2");
+                string minuteStr = Minute.ToString("D2");
+                if (TimeTypeValue == TimeType.H24)
+                {
+                    return $"{hourStr}:{minuteStr}";
+                }
+                else
+                {
+                    string amPm = TimeTypeValue == TimeType.AM ? "AM" : "PM";
+                    return $"{hourStr}:{minuteStr} {amPm}";
+                }
             }
         }
-        public TimeOnly GetTime()
+        public TimeOnly GetTime
         {
-            return new TimeOnly(Hour, Minute);
+            get
+            {
+                if (IsLiveTime)
+                {
+                    ResetOperation();
+                }
+                return new TimeOnly(Hour, Minute);
+            }
+        }
+
+        public string GetMeridiem
+        {
+            get
+            {
+                if (TimeTypeValue == TimeType.H24)
+                {
+                    return "";
+                }
+                else
+                {
+                    return TimeTypeValue == TimeType.AM ? "AM" : "PM";
+                }
+            }
         }
 
         protected virtual void OnPropertyChanged(string PropertyName)

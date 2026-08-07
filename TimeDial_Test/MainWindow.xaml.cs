@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.ComponentModel;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -14,18 +15,38 @@ namespace TimeDial_Test
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        private int _Hour;
+
+        public int Hour
+        {
+            get { return _Hour; }
+            set { _Hour = value; OnPropertyChanged(nameof(Hour)); }
+        }
+
+        private int  _Minute;
+
+        public int  Minute
+        {
+            get { return _Minute; }
+            set { _Minute = value; OnPropertyChanged(nameof(Minute)); }
+        }
+
         public MainWindow()
         {
             InitializeComponent();
 
-            TimeOnly Time = TimeDial.GetTime();
-            string TimeString = TimeDial.GetTimeString();
-
-
+            TimeOnly Time = TimeDial.GetTime;                 // {06:04}
+            string TimeString = TimeDial.GetTimeString;       // "06:04 AM"
+            string Meridiem = TimeDial.GetMeridiem;           // "AM"
         }
 
-       
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
     }
 }
