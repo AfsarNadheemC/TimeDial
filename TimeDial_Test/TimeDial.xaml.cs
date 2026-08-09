@@ -25,10 +25,12 @@ namespace TimeDialControl
 
         private double MAX_MARGIN = 690;
         private const double MAX_MINUTE = 1770;
-        private const double HOUR_MARGIN = 30;
+
+        private bool isTimeUpdatingFlag  ;
 
         public TimeDial()
         {
+
             Minutes = new List<int>();
             Hours = new ObservableCollection<int>();
 
@@ -37,11 +39,29 @@ namespace TimeDialControl
                 Minutes.Add(i);
             }
 
-            TimeTypeValue = TimeType.H24;
-            Hour = DateTime.Now.Hour;
-            Minute = DateTime.Now.Minute;
+
             IsLiveTime = true;
+
             InitializeComponent();
+            Initiate();
+        }
+
+        public void Initiate()
+        {
+            if (TimeTypeValue == TimeType.PM)
+            {
+                if (Hour > 12)
+                {
+                    Hour -= 12;
+                }
+            }
+            else if (TimeTypeValue == TimeType.AM)
+            {
+                if (Hour == 0)
+                {
+                    Hour = 12;
+                }
+            }
         }
 
         private static void OnHourChanged(
@@ -150,6 +170,7 @@ DependencyPropertyChangedEventArgs e)
 
                 double Bot = TimeTypeValue == TimeType.H24 ? MAX_MARGIN - (Hour) * 30 : MAX_MARGIN - (Hour - 1) * 30;
 
+
                 return new Thickness(0, -Top, 0, -Bot);
             }
         }
@@ -232,7 +253,6 @@ DependencyPropertyChangedEventArgs e)
             get { return (bool)GetValue(Is24HourFormatProperty); }
             set
             {
-
                 SetValue(Is24HourFormatProperty, value);
             }
         }
@@ -250,6 +270,9 @@ DependencyPropertyChangedEventArgs e)
             get { return _TimeType; }
             private set
             {
+
+                isTimeUpdatingFlag = true;
+
                 Hours.Clear();
 
                 TimeType OldTimeType = _TimeType;
@@ -272,6 +295,10 @@ DependencyPropertyChangedEventArgs e)
                             if (Hour == 0)
                             {
                                 Hour = 12;
+                            }
+                            else if (Hour > 12)
+                            {
+                                Hour -= 12;
                             }
                             else
                             {
@@ -331,6 +358,8 @@ DependencyPropertyChangedEventArgs e)
 
                 OnPropertyChanged(nameof(TimeTypeValue));
                 OnPropertyChanged(nameof(TimeTypeMargin));
+
+                isTimeUpdatingFlag = false;
             }
         }
 
@@ -373,6 +402,8 @@ DependencyPropertyChangedEventArgs e)
 
         private void HourItemsControl_MouseWheel(object sender, MouseWheelEventArgs e)
         {
+            isTimeUpdatingFlag = true;
+
             IsLiveTime = false;
             if (e.Delta < 0 && (Hour < 12 && TimeTypeValue != TimeType.H24 || Hour < 23 && TimeTypeValue == TimeType.H24))
             {
@@ -384,10 +415,14 @@ DependencyPropertyChangedEventArgs e)
                 Hour -= 1;
 
             }
+
+            isTimeUpdatingFlag = false;
         }
 
         private void MinuteItemsControl_MouseWheel(object sender, MouseWheelEventArgs e)
-        {
+        {            
+            isTimeUpdatingFlag = true;
+
             IsLiveTime = false;
             if (e.Delta < 0 && Minute < 59)
             {
@@ -398,6 +433,8 @@ DependencyPropertyChangedEventArgs e)
             {
                 Minute -= 1;
             }
+
+            isTimeUpdatingFlag = false;
         }
 
         public void ResetOperation()
@@ -479,6 +516,8 @@ DependencyPropertyChangedEventArgs e)
 
         private void Hour_Mousedown(object sender, MouseButtonEventArgs e)
         {
+            isTimeUpdatingFlag = true;
+
             if (sender is TextBlock tb && tb.DataContext is int h)
             {
 
@@ -496,33 +535,10 @@ DependencyPropertyChangedEventArgs e)
                     IsLiveTime = false;
                 }
             }
-        }
-        private void HourTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (int.TryParse(HourTextBox.Text, out int newHour))
-            {
-                if (TimeTypeValue == TimeType.H24)
-                {
-                    if (newHour < 0 || newHour > 23)
-                    {
-                        HourTextBox.Text = Hour.ToString();
-                    }
 
-                }
-                else
-                {
-                    if (newHour < 1 || newHour > 12)
-                    {
-                        HourTextBox.Text = Hour.ToString();
-                    }
-
-                }
-            }
-            else
-            {
-                HourTextBox.Text = Hour.ToString();
-            }
+            isTimeUpdatingFlag = false;
         }
+
         private void HourTextBox_MouseLeave(object sender, MouseEventArgs e)
         {
             UpdateHourByTextBox();
@@ -554,6 +570,8 @@ DependencyPropertyChangedEventArgs e)
 
         private void Minute_Mousedown(object sender, MouseButtonEventArgs e)
         {
+            isTimeUpdatingFlag = true;
+
             if (sender is TextBlock tb && tb.DataContext is int m)
             {
                 if (Minute == m)
@@ -569,9 +587,14 @@ DependencyPropertyChangedEventArgs e)
                     IsLiveTime = false;
                 }
             }
+
+            isTimeUpdatingFlag = false;
         }
         private void MinuteTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+
+            if (isTimeUpdatingFlag) return;
+
             if (int.TryParse(MinuteTextBox.Text, out int newMinute))
             {
                 if (newMinute < 0 || newMinute > 59)
@@ -686,6 +709,6 @@ DependencyPropertyChangedEventArgs e)
 
     public enum TimeType
     {
-        AM, PM, H24
+        H24, AM, PM
     }
 }

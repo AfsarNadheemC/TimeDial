@@ -142,7 +142,7 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBox x:Name="HourTextBox" FontSize="20" VerticalContentAlignment="Center" Padding="0" HorizontalContentAlignment="Center" LostFocus="HourTextBox_LostFocus" KeyDown="HourTextBox_KeyDown" MouseLeave="HourTextBox_MouseLeave" TextChanged="HourTextBox_TextChanged" Grid.Column="0" Text="{Binding Hour , UpdateSourceTrigger=LostFocus}" Margin="0,1" BorderThickness="0" Visibility="Collapsed"/>
+                    <TextBox x:Name="HourTextBox" FontSize="20" VerticalContentAlignment="Center" Padding="0" HorizontalContentAlignment="Center" LostFocus="HourTextBox_LostFocus" KeyDown="HourTextBox_KeyDown" MouseLeave="HourTextBox_MouseLeave" Grid.Column="0" Text="{Binding Hour , UpdateSourceTrigger=LostFocus}" Margin="0,1" BorderThickness="0" Visibility="Collapsed"/>
                     <TextBox x:Name="MinuteTextBox" FontSize="20" VerticalContentAlignment="Center" Padding="0" HorizontalContentAlignment="Center" LostFocus="MinuteTextBox_LostFocus" KeyDown="MinuteTextBox_KeyDown" MouseLeave="MinuteTextBox_MouseLeave" TextChanged="MinuteTextBox_TextChanged" Grid.Column="1" Text="{Binding Minute }" Margin="0,1" BorderThickness="0" Visibility="Collapsed" />
                 </Grid>
 
@@ -222,4 +222,5 @@
             </Grid>
         </Border>
     </Grid>
+    
 </UserControl>
