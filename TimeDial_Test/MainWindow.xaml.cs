@@ -54,5 +54,10 @@ namespace TimeDial_Test
 
             MessageBox.Show($"Hour : {TimeDial.Hour}\nHour Margin : {TimeDial.HourMargin}\nHour Max Margin : {TimeDial.MAX_MARGIN}\nHour Items Control Height : {TimeDial.HourItemsControl.Height}\nMinute : {TimeDial.Minute}\nMinute Margin : {TimeDial.MinuteMargin} Time Type : {TimeDial.TimeTypeValue}"                );
         }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show($"{TimeDial.IsLiveTime}");
+        }
     }
 }

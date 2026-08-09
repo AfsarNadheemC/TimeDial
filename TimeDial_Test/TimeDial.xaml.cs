@@ -26,7 +26,7 @@ namespace TimeDialControl
         public double MAX_MARGIN = 690;
         public const double MAX_MINUTE = 1770;
 
-        private bool isTimeUpdatingFlag  ;
+        private bool isTimeUpdatingFlag;
 
         public TimeDial()
         {
@@ -420,7 +420,7 @@ DependencyPropertyChangedEventArgs e)
         }
 
         private void MinuteItemsControl_MouseWheel(object sender, MouseWheelEventArgs e)
-        {            
+        {
             isTimeUpdatingFlag = true;
 
             IsLiveTime = false;
@@ -439,7 +439,10 @@ DependencyPropertyChangedEventArgs e)
 
         public void ResetOperation()
         {
-            Minute = DateTime.Now.Minute;
+            if (Minute != Minute)
+            {
+                Minute = DateTime.Now.Minute;
+            }
 
             int H = DateTime.Now.Hour;
             if (TimeTypeValue != TimeType.H24)
@@ -451,18 +454,27 @@ DependencyPropertyChangedEventArgs e)
                 }
                 else if (H > 12)
                 {
-                    Hour = H - 12;
+                    if (Hour != H - 12)
+                    {
+                        Hour = H - 12;
+                    }
                     TimeTypeValue = TimeType.PM;
                 }
                 else
                 {
-                    Hour = H;
+                    if (Hour != H)
+                    {
+                        Hour = H;
+                    }
                     TimeTypeValue = TimeType.AM;
                 }
             }
             else
             {
-                Hour = H;
+                if (Hour != H)
+                {
+                    Hour = H;
+                }
             }
         }
 
@@ -707,7 +719,22 @@ DependencyPropertyChangedEventArgs e)
 
         private void root_Loaded(object sender, RoutedEventArgs e)
         {
+            var h = Hour;
+            var m = Minute;
             Is24HourFormat ??= false;
+
+            if (Is24HourFormat == false)
+            {
+                if (Hour == 0)
+                {
+                    Hour = 12;
+                }
+                else if (Hour > 12)
+                {
+                    Hour -= 12;
+                }
+            }
+
             IsLiveTime = true;
         }
     }

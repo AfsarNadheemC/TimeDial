@@ -10,8 +10,9 @@
         Background="Navy" Topmost="True" x:Name="root">
 
     <Grid DataContext="{Binding ElementName=root}">
-        <td:TimeDial x:Name="TimeDial" Is24HourFormat="False"/>
+        <td:TimeDial x:Name="TimeDial" Hour="{Binding Hour , Mode=OneWayToSource}" Minute="{Binding Minute , Mode=OneWayToSource}" Is24HourFormat="False"/>
 
+        <Button VerticalAlignment="Bottom" Content="Check" Click="Button_Click_1" />
 
     </Grid>
 </Window>
