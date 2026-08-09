@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TimeDialControl"
              mc:Ignorable="d" MaxHeight="30" MinHeight="30" MaxWidth="120" MinWidth="120"
-             d:DesignHeight="30" d:DesignWidth="120" x:Name="root" >
+             d:DesignHeight="30" d:DesignWidth="120" x:Name="root" Loaded="root_Loaded" >
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="B2V"/>

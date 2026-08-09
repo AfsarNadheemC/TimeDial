@@ -22,15 +22,15 @@ namespace TimeDial_Test
         public int Hour
         {
             get { return _Hour; }
-            set { _Hour = value; OnPropertyChanged(nameof(Hour)); }
+            set { _Hour = value;  }
         }
 
-        private int  _Minute;
+        private int _Minute;
 
-        public int  Minute
+        public int Minute
         {
             get { return _Minute; }
-            set { _Minute = value; OnPropertyChanged(nameof(Minute)); }
+            set { _Minute = value;  }
         }
 
         public MainWindow()
@@ -48,5 +48,11 @@ namespace TimeDial_Test
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+            MessageBox.Show($"Hour : {TimeDial.Hour}\nHour Margin : {TimeDial.HourMargin}\nHour Max Margin : {TimeDial.MAX_MARGIN}\nHour Items Control Height : {TimeDial.HourItemsControl.Height}\nMinute : {TimeDial.Minute}\nMinute Margin : {TimeDial.MinuteMargin} Time Type : {TimeDial.TimeTypeValue}"                );
+        }
     }
 }

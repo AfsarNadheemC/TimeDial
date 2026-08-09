@@ -23,8 +23,8 @@ namespace TimeDialControl
     public partial class TimeDial : UserControl, INotifyPropertyChanged
     {
 
-        private double MAX_MARGIN = 690;
-        private const double MAX_MINUTE = 1770;
+        public double MAX_MARGIN = 690;
+        public const double MAX_MINUTE = 1770;
 
         private bool isTimeUpdatingFlag  ;
 
@@ -40,10 +40,10 @@ namespace TimeDialControl
             }
 
 
-            IsLiveTime = true;
+
+            var v = Is24HourFormat;
 
             InitializeComponent();
-            Initiate();
         }
 
         public void Initiate()
@@ -197,9 +197,9 @@ DependencyPropertyChangedEventArgs e)
             }
         }
 
-        public void UpdateTimeTypeValue(bool is24HourFormat)
+        public void UpdateTimeTypeValue(bool? is24HourFormat)
         {
-            if (is24HourFormat)
+            if (is24HourFormat is true)
             {
 
                 TimeTypeValue = TimeType.H24;
@@ -233,7 +233,7 @@ DependencyPropertyChangedEventArgs e)
 
 
             }
-            else
+            else if (is24HourFormat is false)
             {
                 if (Hour > 11)
                 {
@@ -248,9 +248,9 @@ DependencyPropertyChangedEventArgs e)
         }
 
 
-        public bool Is24HourFormat
+        public bool? Is24HourFormat
         {
-            get { return (bool)GetValue(Is24HourFormatProperty); }
+            get { return (bool?)GetValue(Is24HourFormatProperty); }
             set
             {
                 SetValue(Is24HourFormatProperty, value);
@@ -259,7 +259,7 @@ DependencyPropertyChangedEventArgs e)
 
         // Using a DependencyProperty as the backing store for Is24HourFormat.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty Is24HourFormatProperty =
-            DependencyProperty.Register(nameof(Is24HourFormat), typeof(bool), typeof(TimeDial), new PropertyMetadata(true, OnFormatChanged));
+            DependencyProperty.Register(nameof(Is24HourFormat), typeof(bool?), typeof(TimeDial), new PropertyMetadata(null, OnFormatChanged));
 
 
 
@@ -700,11 +700,16 @@ DependencyPropertyChangedEventArgs e)
             }
         }
 
-        protected virtual void OnPropertyChanged(string PropertyName)
+        public virtual void OnPropertyChanged(string PropertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
         }
 
+        private void root_Loaded(object sender, RoutedEventArgs e)
+        {
+            Is24HourFormat ??= false;
+            IsLiveTime = true;
+        }
     }
 
     public enum TimeType

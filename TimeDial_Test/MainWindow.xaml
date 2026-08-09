@@ -10,6 +10,8 @@
         Background="Navy" Topmost="True" x:Name="root">
 
     <Grid DataContext="{Binding ElementName=root}">
-        <td:TimeDial x:Name="TimeDial" />
+        <td:TimeDial x:Name="TimeDial" Is24HourFormat="False"/>
+
+
     </Grid>
 </Window>
