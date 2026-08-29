@@ -737,10 +737,24 @@ DependencyPropertyChangedEventArgs e)
 
             IsLiveTime = true;
         }
+
+        private void Container_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Popup.IsOpen = true;
+        }
+
+        private void Container_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (Popup.IsMouseOver) return;
+            Popup.IsOpen = false;
+        }
     }
 
     public enum TimeType
     {
-        H24, AM, PM
+        H24,
+        AM,
+        PM
+
     }
 }

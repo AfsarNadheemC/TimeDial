@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TimeDialControl"
-             mc:Ignorable="d" MaxHeight="30" MinHeight="30" MaxWidth="120" MinWidth="120"
+             mc:Ignorable="d" MaxHeight="250" MinHeight="30" MaxWidth="120" MinWidth="120"
              d:DesignHeight="30" d:DesignWidth="120" x:Name="root" Loaded="root_Loaded" >
 
     <UserControl.Resources>
@@ -14,53 +14,9 @@
     <Grid DataContext="{Binding ElementName=root}">
 
 
-        <Border Background="White"  ClipToBounds="true" CornerRadius="10" >
-
-            <Border.Style>
-                <Style TargetType="Border">
-                    <Setter Property="Margin" Value="0"/>
-
-                    <Style.Triggers>
-
-                        <Trigger Property="IsMouseOver" Value="True">
+        <Border Background="White"  ClipToBounds="true" CornerRadius="10" x:Name="Container" MouseEnter="Container_MouseEnter" MouseLeave="Container_MouseLeave" >
 
               
-                            
-                            <Trigger.EnterActions>
-                                <BeginStoryboard >
-                                    <Storyboard >
-                                        <ThicknessAnimation Duration="0:0:0.3" To="0,-120,0,-120" Storyboard.TargetProperty="Margin" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </Trigger.EnterActions>
-
-                            <Trigger.ExitActions>
-                                <BeginStoryboard >
-                                    <Storyboard >
-                                        <ThicknessAnimation Duration="0:0:0.2" To="0,0,0,0" Storyboard.TargetProperty="Margin" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </Trigger.ExitActions>
-
-                        </Trigger>
-
-
-                    </Style.Triggers>
-
-                </Style>
-            </Border.Style>
-
-            <Border.OpacityMask>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                    <GradientStop Color="#00FFFFFF" Offset="0"/>
-                    <GradientStop Color="#22FFFFFF" Offset="0.2"/>
-                    <GradientStop Color="#FFFFFFFF" Offset="0.48"/>
-                    <GradientStop Color="#FFFFFFFF" Offset="0.52"/>
-                    <GradientStop Color="#22FFFFFF" Offset="0.8"/>
-                    <GradientStop Color="#00FFFFFF" Offset="1"/>
-                </LinearGradientBrush>
-            </Border.OpacityMask>
-
 
             <Grid x:Name="MainGrid">
                 <Grid.ColumnDefinitions>
@@ -80,7 +36,7 @@
                 <TextBlock x:Name="Reset" MouseDown="Reset_MouseDown" Text="↺" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="25" Margin="0,0,0,2">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
-                            
+
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsMouseOver, ElementName=Reset}" Value="True">
                                     <Setter Property="FontWeight" Value="SemiBold"/>
@@ -93,49 +49,7 @@
                 <TextBlock Text=":" VerticalAlignment="Center" Grid.ColumnSpan="2" HorizontalAlignment="Center" TextAlignment="Center" FontSize="20" Grid.Column="1" />
 
 
-                <Border ClipToBounds="True" Background="Transparent" Margin="0,-120" Grid.Column="1">
-
-
-
-                    <ItemsControl Background="Transparent" x:Name="HourItemsControl" MouseWheel="HourItemsControl_MouseWheel" Height="720" ItemsSource="{Binding Hours, ElementName=root}" Margin="{Binding ElementName=root, Path=HourMargin}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock  MouseDown="Hour_Mousedown" Height="30" Text="{Binding}" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate >
-                                <StackPanel />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-
-                    </ItemsControl>
-                </Border>
-
-
-                <Border ClipToBounds="True" Grid.Column="2" Background="Transparent" Margin="0,-120">
-
-
-
-                    <ItemsControl Background="Transparent" x:Name="MinuteItemsControl" MouseWheel="MinuteItemsControl_MouseWheel" Height="1800" ItemsSource="{Binding Minutes, ElementName=root}" Margin="{Binding ElementName=root, Path=MinuteMargin}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock MouseDown="Minute_Mousedown" Background="Transparent" Height="30" Text="{Binding}" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate >
-                                <StackPanel />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-
-                    </ItemsControl>
-                </Border>
-
                 <Grid Grid.Column="1" Height="30" Grid.ColumnSpan="2" x:Name="TextBoxGrid" Margin="0,-3,0,0">
-
 
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -144,8 +58,8 @@
 
                     <TextBox x:Name="HourTextBox" FontSize="20" VerticalContentAlignment="Center" Padding="0" HorizontalContentAlignment="Center" LostFocus="HourTextBox_LostFocus" KeyDown="HourTextBox_KeyDown" MouseLeave="HourTextBox_MouseLeave" Grid.Column="0" Text="{Binding Hour , UpdateSourceTrigger=LostFocus}" Margin="0,1" BorderThickness="0" Visibility="Collapsed"/>
                     <TextBox x:Name="MinuteTextBox" FontSize="20" VerticalContentAlignment="Center" Padding="0" HorizontalContentAlignment="Center" LostFocus="MinuteTextBox_LostFocus" KeyDown="MinuteTextBox_KeyDown" MouseLeave="MinuteTextBox_MouseLeave" TextChanged="MinuteTextBox_TextChanged" Grid.Column="1" Text="{Binding Minute }" Margin="0,1" BorderThickness="0" Visibility="Collapsed" />
-                </Grid>
 
+                </Grid>
 
                 <Border Background="Transparent" x:Name="NowGrid" ClipToBounds="True" Height="30"  Grid.ColumnSpan="2" Grid.Column="1" MouseEnter="NowGrid_MouseEnter" >
 
@@ -182,45 +96,111 @@
                         </Style>
                     </Border.Style>
 
- 
-                        <TextBlock x:Name="Txt"
+
+                    <TextBlock x:Name="Txt"
                Text="Now" TextAlignment="Center" Width="70"
                FontSize="20"
                Background="White" Height="28" />
 
                 </Border>
 
-
-                <Border Grid.Column="3" Height="150" VerticalAlignment="Center" ClipToBounds="True" Background="Transparent" x:Name="TimeTypeBorder" MouseWheel="TimeTypeBorder_MouseWheel">
-
-
-                    <StackPanel  Background="Transparent" Height="90" Margin="{Binding TimeTypeMargin}" VerticalAlignment="Center">
-
-
-                        <StackPanel.Resources >
-
-                            <Style TargetType="Label">
-                                <Setter Property="FontSize" Value="14"/>
-                                <Setter Property="Height" Value="30"/>
-                                <Setter Property="VerticalAlignment" Value="Center"/>
-                                <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                <Setter Property="HorizontalAlignment" Value="Center"/>
-                                <Setter Property="Foreground" Value="Navy"/>
-                                <Setter Property="Padding" Value="0"/>
-                            </Style>
-
-                        </StackPanel.Resources>
-
-                        <Label Content="AM" MouseDown="TimeTypeMouseDown" />
-                        <Label Content="PM" MouseDown="TimeTypeMouseDown" />
-                        <Label Content="24h" MouseDown="TimeTypeMouseDown" />
-
-                    </StackPanel>
-                </Border>
-
-
             </Grid>
+
         </Border>
+
+
+        <Popup x:Name="Popup" AllowsTransparency="True" HorizontalOffset="25" VerticalOffset="-250">
+
+            <Border Background="white" Height="250">
+
+                <!--<Border.OpacityMask>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="#00FFFFFF" Offset="0"/>
+                        <GradientStop Color="#22FFFFFF" Offset="0.2"/>
+                        <GradientStop Color="#FFFFFFFF" Offset="0.48"/>
+                        <GradientStop Color="#FFFFFFFF" Offset="0.52"/>
+                        <GradientStop Color="#22FFFFFF" Offset="0.8"/>
+                        <GradientStop Color="#00FFFFFF" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.OpacityMask>-->
+
+                <Grid>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Border Width="32.5" ClipToBounds="True" Background="Transparent" Margin="0,-120" Grid.Column="0">
+
+                        <ItemsControl Background="Transparent" x:Name="HourItemsControl" MouseWheel="HourItemsControl_MouseWheel" Height="720" ItemsSource="{Binding Hours, ElementName=root}" Margin="{Binding ElementName=root, Path=HourMargin}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock  MouseDown="Hour_Mousedown" Height="30" Text="{Binding}" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate >
+                                    <StackPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+
+                        </ItemsControl>
+                    </Border>
+
+                    <Border Width="32.5" ClipToBounds="True" Grid.Column="1" Background="Transparent" Margin="0,-120">
+
+                        <ItemsControl Background="Transparent" x:Name="MinuteItemsControl" MouseWheel="MinuteItemsControl_MouseWheel" Height="1800" ItemsSource="{Binding Minutes, ElementName=root}" Margin="{Binding ElementName=root, Path=MinuteMargin}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock MouseDown="Minute_Mousedown" Background="Transparent" Height="30" Text="{Binding}" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate >
+                                    <StackPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+
+                        </ItemsControl>
+
+                    </Border>
+
+                    <Border Grid.Column="2" Height="150" Width="30" VerticalAlignment="Center" ClipToBounds="True" Background="Transparent" x:Name="TimeTypeBorder" MouseWheel="TimeTypeBorder_MouseWheel">
+
+                        <StackPanel  Background="Transparent" Height="90" Margin="{Binding TimeTypeMargin}" VerticalAlignment="Center">
+
+                            <StackPanel.Resources >
+
+                                <Style TargetType="Label">
+                                    <Setter Property="FontSize" Value="14"/>
+                                    <Setter Property="Height" Value="30"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="Foreground" Value="Navy"/>
+                                    <Setter Property="Padding" Value="0"/>
+                                </Style>
+
+                            </StackPanel.Resources>
+
+                            <Label Content="AM" MouseDown="TimeTypeMouseDown" />
+                            <Label Content="PM" MouseDown="TimeTypeMouseDown" />
+                            <Label Content="24h" MouseDown="TimeTypeMouseDown" />
+
+                        </StackPanel>
+                    </Border>
+
+                </Grid>
+
+            </Border>
+
+        </Popup>
+
     </Grid>
-    
+
 </UserControl>
