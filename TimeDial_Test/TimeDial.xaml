@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TimeDialControl"
-             mc:Ignorable="d" MaxHeight="250" MinHeight="30" MaxWidth="120" MinWidth="120"
+             mc:Ignorable="d" MaxHeight="30" MinHeight="30" MaxWidth="120" MinWidth="120"
              d:DesignHeight="30" d:DesignWidth="120" x:Name="root" Loaded="root_Loaded" >
 
     <UserControl.Resources>
@@ -16,7 +16,7 @@
 
         <Border Background="White"  ClipToBounds="true" CornerRadius="10" x:Name="Container" MouseEnter="Container_MouseEnter" MouseLeave="Container_MouseLeave" >
 
-              
+
 
             <Grid x:Name="MainGrid">
                 <Grid.ColumnDefinitions>
@@ -46,20 +46,24 @@
                     </TextBlock.Style>
                 </TextBlock>
 
-                <TextBlock Text=":" VerticalAlignment="Center" Grid.ColumnSpan="2" HorizontalAlignment="Center" TextAlignment="Center" FontSize="20" Grid.Column="1" />
 
 
-                <Grid Grid.Column="1" Height="30" Grid.ColumnSpan="2" x:Name="TextBoxGrid" Margin="0,-3,0,0">
+                <Grid Grid.Column="1" Height="30" Grid.ColumnSpan="2" x:Name="TextBoxGrid" Margin="0,0,0,0" Background="Transparent" >
 
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBox x:Name="HourTextBox" FontSize="20" VerticalContentAlignment="Center" Padding="0" HorizontalContentAlignment="Center" LostFocus="HourTextBox_LostFocus" KeyDown="HourTextBox_KeyDown" MouseLeave="HourTextBox_MouseLeave" Grid.Column="0" Text="{Binding Hour , UpdateSourceTrigger=LostFocus}" Margin="0,1" BorderThickness="0" Visibility="Collapsed"/>
-                    <TextBox x:Name="MinuteTextBox" FontSize="20" VerticalContentAlignment="Center" Padding="0" HorizontalContentAlignment="Center" LostFocus="MinuteTextBox_LostFocus" KeyDown="MinuteTextBox_KeyDown" MouseLeave="MinuteTextBox_MouseLeave" TextChanged="MinuteTextBox_TextChanged" Grid.Column="1" Text="{Binding Minute }" Margin="0,1" BorderThickness="0" Visibility="Collapsed" />
+                    <TextBox x:Name="HourTextBox" FontSize="20" VerticalContentAlignment="Center" Padding="0" HorizontalContentAlignment="Center" LostFocus="HourTextBox_LostFocus" KeyDown="HourTextBox_KeyDown" MouseLeave="HourTextBox_MouseLeave" Grid.Column="0" Text="{Binding Hour , UpdateSourceTrigger=LostFocus}" Margin="0,1" BorderThickness="0" />
+                    <TextBox x:Name="MinuteTextBox" FontSize="20" VerticalContentAlignment="Center" Padding="0" HorizontalContentAlignment="Center" LostFocus="MinuteTextBox_LostFocus" KeyDown="MinuteTextBox_KeyDown" MouseLeave="MinuteTextBox_MouseLeave" TextChanged="MinuteTextBox_TextChanged" Grid.Column="1" Text="{Binding Minute }" Margin="0,1" BorderThickness="0"  />
 
+                    <TextBlock Text=":" VerticalAlignment="Center" Grid.ColumnSpan="2" HorizontalAlignment="Center" TextAlignment="Center" FontSize="20"  />
                 </Grid>
+
+                <TextBlock Grid.Column="3" Foreground="Navy" Text="{Binding GetMeridiemWith24h}" TextAlignment="Center" FontSize="14" VerticalAlignment="Center"/>
+
+
 
                 <Border Background="Transparent" x:Name="NowGrid" ClipToBounds="True" Height="30"  Grid.ColumnSpan="2" Grid.Column="1" MouseEnter="NowGrid_MouseEnter" >
 
@@ -109,11 +113,11 @@
         </Border>
 
 
-        <Popup x:Name="Popup" AllowsTransparency="True" HorizontalOffset="25" VerticalOffset="-250">
+        <Popup x:Name="Popup" AllowsTransparency="True" Placement="Center" HorizontalOffset="15" VerticalOffset="0">
 
-            <Border Background="white" Height="250">
+            <Border Background="White" CornerRadius="10" Height="250" MouseLeave="Container_MouseLeave">
 
-                <!--<Border.OpacityMask>
+                <Border.OpacityMask>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                         <GradientStop Color="#00FFFFFF" Offset="0"/>
                         <GradientStop Color="#22FFFFFF" Offset="0.2"/>
@@ -122,7 +126,7 @@
                         <GradientStop Color="#22FFFFFF" Offset="0.8"/>
                         <GradientStop Color="#00FFFFFF" Offset="1"/>
                     </LinearGradientBrush>
-                </Border.OpacityMask>-->
+                </Border.OpacityMask>
 
                 <Grid>
 

@@ -27,9 +27,11 @@ namespace TimeDialControl
         public const double MAX_MINUTE = 1770;
 
         private bool isTimeUpdatingFlag;
+        private bool isTimeTextUpdatingFlag;
 
         public TimeDial()
         {
+            isTimeTextUpdatingFlag = false;
 
             Minutes = new List<int>();
             Hours = new ObservableCollection<int>();
@@ -358,6 +360,8 @@ DependencyPropertyChangedEventArgs e)
 
                 OnPropertyChanged(nameof(TimeTypeValue));
                 OnPropertyChanged(nameof(TimeTypeMargin));
+                OnPropertyChanged(nameof(GetMeridiemWith24h));
+                OnPropertyChanged(nameof(GetMeridiem));
 
                 isTimeUpdatingFlag = false;
             }
@@ -439,7 +443,7 @@ DependencyPropertyChangedEventArgs e)
 
         public void ResetOperation()
         {
-            if (Minute != Minute)
+            if (Minute != DateTime.Now.Minute)
             {
                 Minute = DateTime.Now.Minute;
             }
@@ -535,11 +539,11 @@ DependencyPropertyChangedEventArgs e)
 
                 if (Hour == h)
                 {
+                    Popup.IsOpen = false;
                     OnPropertyChanged(nameof(HourMargin));
-                    HourTextBox.Visibility = Visibility.Visible;
                     HourTextBox.Focus();
                     HourTextBox.SelectAll();
-
+                    isTimeTextUpdatingFlag = true;
                 }
                 else
                 {
@@ -554,6 +558,8 @@ DependencyPropertyChangedEventArgs e)
         private void HourTextBox_MouseLeave(object sender, MouseEventArgs e)
         {
             UpdateHourByTextBox();
+            Keyboard.ClearFocus();
+            //Popup.Focus();
         }
         private void HourTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
@@ -577,7 +583,6 @@ DependencyPropertyChangedEventArgs e)
             HourTextBox.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
             OnPropertyChanged(nameof(HourMargin));
             OnPropertyChanged(nameof(HourMargin));
-            HourTextBox.Visibility = Visibility.Collapsed;
         }
 
         private void Minute_Mousedown(object sender, MouseButtonEventArgs e)
@@ -588,10 +593,12 @@ DependencyPropertyChangedEventArgs e)
             {
                 if (Minute == m)
                 {
-                    MinuteTextBox.Visibility = Visibility.Visible;
+                    Popup.IsOpen = false;
+
                     MinuteTextBox.Focus();
                     OnPropertyChanged(nameof(Minute));
                     MinuteTextBox.SelectAll();
+                    isTimeTextUpdatingFlag = true;
                 }
                 else
                 {
@@ -635,13 +642,14 @@ DependencyPropertyChangedEventArgs e)
         private void MinuteTextBox_MouseLeave(object sender, MouseEventArgs e)
         {
             UpdateMinuteByTextBox();
+            Keyboard.ClearFocus();
+
         }
         public void UpdateMinuteByTextBox()
         {
             MinuteTextBox.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
             OnPropertyChanged(nameof(Minute));
             OnPropertyChanged(nameof(MinuteMargin));
-            MinuteTextBox.Visibility = Visibility.Collapsed;
         }
 
         private void TimeTypeMouseDown(object sender, MouseButtonEventArgs e)
@@ -712,6 +720,21 @@ DependencyPropertyChangedEventArgs e)
             }
         }
 
+        public string GetMeridiemWith24h
+        {
+            get
+            {
+                if (TimeTypeValue == TimeType.H24)
+                {
+                    return "24h";
+                }
+                else
+                {
+                    return TimeTypeValue == TimeType.AM ? "AM" : "PM";
+                }
+            }
+        }
+
         public virtual void OnPropertyChanged(string PropertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
@@ -740,7 +763,13 @@ DependencyPropertyChangedEventArgs e)
 
         private void Container_MouseEnter(object sender, MouseEventArgs e)
         {
+            if (isTimeTextUpdatingFlag)
+            {
+                isTimeTextUpdatingFlag = false;
+                return;
+            }
             Popup.IsOpen = true;
+
         }
 
         private void Container_MouseLeave(object sender, MouseEventArgs e)
